@@ -1,17 +1,17 @@
 # Template file for 'watchman'
 pkgname=watchman
-version=4.9.0
-revision=8
+version=2026.08.03.00
+revision=1
 build_style=gnu-configure
 configure_args="--disable-statedir --enable-lenient"
-hostmakedepends="pkg-config automake libtool"
-makedepends="pcre-devel openssl-devel"
+hostmakedepends="pkg-config automake git libtool python3"
+makedepends="pcre-devel openssl-devel boost-python3 python3-devel python3-lz4"
 short_desc="Watches files and records, or triggers actions, when they change"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="Apache-2.0"
 homepage="https://facebook.github.io/watchman/"
 distfiles="https://github.com/facebook/watchman/archive/v${version}.tar.gz"
-checksum=1f6402dc70b1d056fffc3748f2fdcecff730d8843bb6936de395b3443ce05322
+checksum=36ecc782f7dc056e79bd664b3f4c6d4fe08ca78041835df2f1c39ef2566461f6
 
 CFLAGS="-Wno-error"
 
