@@ -1,18 +1,18 @@
 # Template file for 'redis'
 pkgname=redis
-version=7.0.8
-revision=2
+version=8.8.2
+revision=1
 build_style=gnu-makefile
 make_build_args="V=1"
 make_check_target="test"
 checkdepends="pkg-config procps-ng tcl-devel which"
 short_desc="Advanced key-value store"
 maintainer="Enno Boland <gottox@voidlinux.org>"
-license="BSD-3-Clause"
+license="AGPL-3.0-only"
 homepage="https://redis.io"
 changelog="https://raw.githubusercontent.com/redis/redis/${version%.*}/00-RELEASENOTES"
 distfiles="http://download.redis.io/releases/redis-${version}.tar.gz"
-checksum=06a339e491306783dcf55b97f15a5dbcbdc01ccbde6dc23027c475cab735e914
+checksum=328ccd441d5ef22e00c81cbcd088007887fdfd2fabb32c663998f29033acdb25
 
 system_accounts="redis"
 redis_homedir="/var/lib/redis"
@@ -34,11 +34,20 @@ post_patch() {
 		-e "s|^# bind 127.0.0.1|bind 127.0.0.1|" \
 		-e "s|^dir .*|dir ${redis_homedir}|" \
 		-e "s|^pidfile .*|pidfile /run/redis/redis.pid|" redis.conf
+
+	# no perms to write to /proc/<pid>/oom_score_adj
+	rm -f tests/unit/oom-score-adj.tcl
+}
+
+pre_build() {
+	# redis makefile sets gcc to link, but Void build points to ld
+	# https://github.com/redis/redis/blob/669b2a1316f5b35ecf964281b77c054ff28dc934/tests/modules/Makefile#L32
+	make_build_args+=" LD=$CC"
 }
 
 do_install() {
 	make INSTALL_BIN=${DESTDIR}/usr/bin PREFIX=/usr install
-	vlicense COPYING
+	vlicense LICENSE.txt
 
 	vinstall redis.conf 644 etc/redis
 	vsv redis
